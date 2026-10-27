@@ -24,7 +24,7 @@ Keep a JSON checkpoint with these fields. Null means not yet resolved; fill fiel
 | `package` | Manifest path and SHA-256 identity |
 | `submission_approval` | Exact package identity, user response reference, and time |
 | `review` | Thread rename status, last observed state, observed-at UTC, approval evidence, and exact-version public-release evidence |
-| `publishing` | Intended account and route, authentication status, public-release trigger, user choice for optional feature posts, and a post list. Each entry has a stable key, release/feature kind, selected/skipped state, video/caption paths and hashes, status, attempt identity, provider job/container IDs, and verified post ID/URL |
+| `publishing` | Thread rename status, intended account and route, authentication status, public-release trigger, user choice for optional feature posts, and a post list. Each entry has a stable key, release/feature kind, selected/skipped state, video/caption paths and hashes, status, attempt identity, provider job/container IDs, and verified post ID/URL |
 | `schedules` | Owned task IDs, purpose, creation request ID, bound thread, and returned next-run time |
 | `updated_at` | Last saved UTC timestamp |
 
