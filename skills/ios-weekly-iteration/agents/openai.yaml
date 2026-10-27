@@ -1,0 +1,6 @@
+interface:
+  display_name: "iOS weekly iteration"
+  short_description: "Run one approved iOS release cycle autonomously"
+  default_prompt: "Use $ios-weekly-iteration to run one release iteration for this existing iOS app."
+policy:
+  allow_implicit_invocation: false
