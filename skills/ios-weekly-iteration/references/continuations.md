@@ -14,7 +14,7 @@ Keep a JSON checkpoint with these fields. Null means not yet resolved; fill fiel
 | --- | --- |
 | `schema_version` | `1` |
 | `cycle_id`, `project_root`, `thread_id` | Unique cycle ID, absolute repository root, originating host thread |
-| `started_by` | Explicit user request reference, timestamp, and invocation evidence |
+| `started_by` | Explicit user request reference, timestamp, invocation evidence, and the `<AppName> <Version>` thread rename status |
 | `phase` | `backlog`, `development`, `testing`, `preparation`, `submission`, `monitoring`, `complete`, or `cancelled` |
 | `wait` | Kind, reason, next check in UTC, and pending question evidence; null while working |
 | `backlog` | Artifact path, revision identity, and acceptance response reference |

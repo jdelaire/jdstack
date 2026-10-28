@@ -21,6 +21,8 @@ At invocation, inspect repository instructions, the current branch and local cha
 
 Explain the accepted progression once: backlog, development, testing, preparation, submission, monitoring and Instagram. Thereafter continue automatically while authorized work remains. Save phase transitions and only yield for user input or external results. A user's reply resumes the saved phase without another skill invocation. A late Apple review can extend this cycle beyond a week.
 
+When a cycle starts, rename the originating thread to `<AppName> <Version>`, for example `Wat Kham 1.15.0`. Use the host's thread-rename tool (in T3 Code, `t3_thread_update` with `action: "rename"`). `<AppName>` is the app's home-screen name (`CFBundleDisplayName`, not the longer App Store name), and `<Version>` is the release version this cycle targets. Take it from the roadmap or project when it is clear; otherwise rename once the accepted backlog fixes it. If the target version changes later, rename again and keep any status prefix. Later status prefixes go in front of this title. A host without thread renaming does not block the cycle.
+
 ## 1. Accept the backlog
 
 Inspect the actual app and recent code, accessible user feedback including TestFlight feedback and crash submissions, crashes, and performance evidence. Establish a baseline build and relevant checks. Use source code as truth when comments disagree.
