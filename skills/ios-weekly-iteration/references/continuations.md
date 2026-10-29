@@ -17,7 +17,7 @@ Keep a JSON checkpoint with these fields. Null means not yet resolved; fill fiel
 | `started_by` | Explicit user request reference, timestamp, invocation evidence, and the `<AppName> <Version>` thread rename status |
 | `phase` | `backlog`, `development`, `testing`, `preparation`, `submission`, `monitoring`, `complete`, or `cancelled` |
 | `wait` | Kind, reason, next check in UTC, and pending question evidence; null while working |
-| `backlog` | Artifact path, revision identity, and acceptance response reference |
+| `backlog` | Artifact path, revision identity, roadmap path, blob hash and milestone heading when a roadmap applies, gate waivers, and acceptance response reference |
 | `source_commit` | Source revision used to produce the current candidate |
 | `app` | App ID, platform, version string, version ID, build ID/number, and submission ID |
 | `testing` | Thread rename status, simulator verification (device, candidate source, per-check results, screenshot paths, device-only checks), available-at UTC, readiness-at UTC, ready-question state/reference, tested build, user completion response, last TestFlight feedback check UTC, and feedback items with source (thread message or TestFlight submission ID), build, status, and fixing build |

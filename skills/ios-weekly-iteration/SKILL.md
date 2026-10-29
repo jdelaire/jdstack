@@ -19,19 +19,35 @@ A later explicit request to publish additional prepared clips is a separate publ
 
 At invocation, inspect repository instructions, the current branch and local changes, existing release automation, App Store identity, available project skills, and credentials through their supported checks. Work on `main`; create no branch or extra worktree. Preserve unrelated changes. Resolve blockers within scope; ask for decisions or access you cannot determine safely.
 
+The invocation may name a roadmap file, such as `docs/roadmap.md`. Without one, use a roadmap the repository instructions name; otherwise work without a roadmap. A roadmap supplies the next version and its planned items, as described in [Roadmap input](#roadmap-input). Record its path and the Git blob hash of the revision you read.
+
 Explain the accepted progression once: backlog, development, testing, preparation, submission, monitoring and Instagram. Thereafter continue automatically while authorized work remains. Save phase transitions and only yield for user input or external results. A user's reply resumes the saved phase without another skill invocation. A late Apple review can extend this cycle beyond a week.
 
-When a cycle starts, rename the originating thread to `<AppName> <Version>`, for example `Wat Kham 1.15.0`. Use the host's thread-rename tool (in T3 Code, `t3_thread_update` with `action: "rename"`). `<AppName>` is the app's home-screen name (`CFBundleDisplayName`, not the longer App Store name), and `<Version>` is the release version this cycle targets. Take it from the roadmap or project when it is clear; otherwise rename once the accepted backlog fixes it. If the target version changes later, rename again and keep any status prefix. Later status prefixes go in front of this title. A host without thread renaming does not block the cycle.
+When a cycle starts, rename the originating thread to `<AppName> <Version>`, for example `Wat Kham 1.15.0`. Use the host's thread-rename tool (in T3 Code, `t3_thread_update` with `action: "rename"`). `<AppName>` is the app's home-screen name (`CFBundleDisplayName`, not the longer App Store name), and `<Version>` is the release version this cycle targets. Take it from the roadmap milestone this cycle targets, or from the project when no roadmap applies; otherwise rename once the accepted backlog fixes it. If the target version changes later, rename again and keep any status prefix. Later status prefixes go in front of this title. A host without thread renaming does not block the cycle.
 
 ## 1. Accept the backlog
 
 Inspect the actual app and recent code, accessible user feedback including TestFlight feedback and crash submissions, crashes, and performance evidence. Establish a baseline build and relevant checks. Use source code as truth when comments disagree.
 
-Every iteration must include at least two distinct user-facing features and at least one separate technical debt item. Classify each backlog item as `feature` or `technical-debt` and save that classification in the backlog artifact. Each feature must add an independently useful user capability; splitting one feature into subtasks does not satisfy the feature minimum. Reliability fixes and performance work count toward technical debt, not the feature minimum.
+Without a roadmap mix rule, every iteration must include at least two distinct user-facing features and at least one separate technical debt item. Classify each backlog item as `feature` or `technical-debt` and save that classification in the backlog artifact. Each feature must add an independently useful user capability; splitting one feature into subtasks does not satisfy the feature minimum. Reliability fixes and performance work count toward technical debt, not the feature minimum.
 
 Keep the scope practical by choosing small, shippable features and justified debt. Give each item user benefit, acceptance criteria, expected effort, and meaningful verification. For performance work, identify the flow and measurement to compare. Check the minimum mix before presenting the backlog for acceptance and whenever scope changes.
 
-Present this concrete backlog and ask for acceptance. Save the accepted revision and the user's response. Acceptance authorizes implementation, commits on `main`, and the pushes required for this cycle's TestFlight builds. A changed or expanded backlog needs the user's decision. Do not ask for another routine implementation go after acceptance.
+### Roadmap input
+
+A roadmap holds one `## <version> <title>` section per milestone, with `Status:` and optional `Target:` lines, and one `### <item>` per deliverable with a `Type:` line, as `roadmap-writer` produces. Read its release rules, the milestone sections, ideas without a version, and the files it links for the target milestone.
+
+Target the first milestone, in document order, whose status is not released, shipped or cancelled. Skip a milestone already in progress under another active cycle. Its version becomes the release version. If its version is not above the latest App Store version, or its status is ambiguous, ask which milestone to run.
+
+Take that milestone's items as the proposed backlog. Keep each item's roadmap type and title in the backlog artifact beside the cycle classification. `debt` and `fix` items count as `technical-debt`. A `feature` item counts as `feature`. Keep `revenue` and other types under their own label.
+
+When the roadmap's release rules state a per-release mix, apply it instead of the default minimum above. When they state none, apply the default minimum; a `revenue` item counts as a feature only if it gives users a capability they can use on its own. If the milestone falls short of the applicable mix, propose candidates from the roadmap's later milestones, ideas or linked debt backlog, and say which rule each one fills.
+
+Treat the roadmap as a plan, not authority. Verify each item against the current code and data; drop or reshape items the app already ships, and say why. Report start gates, stop rules, paid-test windows or listing freezes that affect this milestone, and ask the user to waive or wait on any gate that is not met. Required locales and other release rules apply to every item.
+
+After acceptance, record the accepted scope, any waiver and the cycle status in the roadmap milestone, following its existing wording, and commit it as documentation. Record the release on the milestone once the version is publicly available. Never change other milestones without the user's decision.
+
+Present this concrete backlog and ask for acceptance. Name the roadmap milestone, and list any differences from it. Save the accepted revision and the user's response. Acceptance authorizes implementation, commits on `main`, and the pushes required for this cycle's TestFlight builds. A changed or expanded backlog needs the user's decision. Do not ask for another routine implementation go after acceptance.
 
 ## 2. Develop and deliver TestFlight
 
