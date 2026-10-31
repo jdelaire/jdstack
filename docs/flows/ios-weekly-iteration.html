@@ -1,0 +1,195 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>ios-weekly-iteration flow</title>
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #0d1117; --fg: #e6edf3; --muted: #8b949e; --card: #161b22; --border: #30363d;
+    --chip: #21262d; --chip-fg: #c9d1d9; --dot: #e6edf3; --dot-fg: #0d1117; --code: #262c36;
+    --gate: #d29922; --title: #58a6ff; --timer: #bc8cff; --loop: #3fb950; --repair: #f0883e; --done: #3fb950;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      color-scheme: light;
+      --bg: #ffffff; --fg: #1f2328; --muted: #59636e; --card: #f6f8fa; --border: #d1d9e0;
+      --chip: #eff2f5; --chip-fg: #31363c; --dot: #1f2328; --dot-fg: #ffffff; --code: #eaeef2;
+      --gate: #9a6700; --title: #0969da; --timer: #8250df; --loop: #1a7f37; --repair: #bc4c00; --done: #1a7f37;
+    }
+  }
+  body { margin: 0; padding: 28px; background: var(--bg); color: var(--fg); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; }
+  .wrap { width: 844px; margin: 0 auto; }
+  header { margin-bottom: 16px; }
+  header h1 { margin: 0; font-size: 22px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  header p { margin: 4px 0 0; color: var(--muted); font-size: 13.5px; }
+  .chip { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; padding: 2px 7px; border-radius: 999px; border: 1px solid var(--border); background: var(--chip); color: var(--chip-fg); white-space: nowrap; }
+  .chip.title { border-color: color-mix(in srgb, var(--title) 55%, transparent); color: var(--title); background: color-mix(in srgb, var(--title) 10%, transparent); }
+  .chip.timer { border-color: color-mix(in srgb, var(--timer) 55%, transparent); color: var(--timer); background: color-mix(in srgb, var(--timer) 10%, transparent); }
+  .entry { border: 1px dashed var(--border); border-radius: 10px; padding: 12px 16px; font-size: 13px; line-height: 1.45; }
+  .entry .row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+  .rail { position: relative; padding-left: 34px; }
+  .rail::before { content: ""; position: absolute; left: 13px; top: 0; bottom: 0; width: 2px; background: var(--border); }
+  .phase { position: relative; margin: 14px 0; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; }
+  .phase .dot { position: absolute; left: -34px; top: 12px; width: 28px; height: 28px; border-radius: 50%; background: var(--dot); color: var(--dot-fg); display: grid; place-items: center; font-weight: 700; font-size: 13px; }
+  .phase h3 { margin: 0; font-size: 15px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .phase h3 .state { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; font-weight: 500; color: var(--muted); }
+  .phase ul { margin: 8px 0 0; padding-left: 18px; font-size: 13px; line-height: 1.45; }
+  .phase li { margin: 2px 0; }
+  .phase .meta { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+  .loop { margin-top: 10px; border-left: 3px solid var(--loop); background: color-mix(in srgb, var(--loop) 8%, transparent); border-radius: 6px; padding: 7px 10px; font-size: 12.5px; line-height: 1.4; }
+  .loop b { color: var(--loop); }
+  .loop.repair { border-left-color: var(--repair); background: color-mix(in srgb, var(--repair) 8%, transparent); }
+  .loop.repair b { color: var(--repair); }
+  .gate { position: relative; padding: 8px 12px; border-radius: 8px; border: 1px solid color-mix(in srgb, var(--gate) 60%, transparent); background: color-mix(in srgb, var(--gate) 12%, transparent); font-size: 12.5px; line-height: 1.4; }
+  .rail > .gate::before { content: ""; position: absolute; left: -27px; top: 50%; width: 12px; height: 12px; margin-top: -6px; transform: rotate(45deg); background: var(--gate); }
+  .phase .gate { margin-top: 10px; }
+  .gate b { color: var(--gate); text-transform: uppercase; font-size: 11px; letter-spacing: .04em; margin-right: 6px; }
+  .gate .no { color: var(--muted); display: block; margin-top: 2px; font-size: 12px; }
+  .end { position: relative; margin-top: 14px; padding: 10px 14px; border-radius: 10px; border: 1px solid color-mix(in srgb, var(--done) 55%, transparent); background: color-mix(in srgb, var(--done) 10%, transparent); font-size: 13px; line-height: 1.45; }
+  .end::before { content: ""; position: absolute; left: -29px; top: 50%; margin-top: -8px; width: 16px; height: 16px; border-radius: 50%; background: var(--done); box-shadow: 0 0 0 4px color-mix(in srgb, var(--done) 25%, transparent); }
+  .end b { color: var(--done); }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; }
+  .box { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; font-size: 12.5px; line-height: 1.45; }
+  .box h4 { margin: 0 0 6px; font-size: 13px; }
+  .box ul { margin: 0; padding-left: 16px; }
+  .legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 11.5px; color: var(--muted); margin-top: 12px; }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .sw { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11.5px; background: var(--code); padding: 1px 4px; border-radius: 4px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>ios-weekly-iteration</h1>
+    <p>One release cycle for an existing iOS app, from backlog to live Instagram posts.</p>
+  </header>
+
+  <div class="entry">
+    <b>Explicit invocation only.</b> A timer, matching project work or the skill loading into context never starts a cycle. Continuations resume a matching active cycle; missing, completed or cancelled state exits.
+    <div class="row">
+      <span class="chip">inspect repo, branch, asc, skills</span>
+      <span class="chip">work on main</span>
+      <span class="chip">checkpoint .git/ios-weekly-iteration/active.json</span>
+      <span class="chip title">rename thread: AppName Version</span>
+    </div>
+  </div>
+
+  <div class="rail">
+    <div class="phase">
+      <div class="dot">1</div>
+      <h3>Accept the backlog <span class="state">phase: backlog</span></h3>
+      <ul>
+        <li>Inspect the app, recent code, TestFlight feedback, crashes, performance. Build a baseline.</li>
+        <li>Optional roadmap: first unreleased milestone sets the version and items. Verify each item against the code.</li>
+        <li>Default mix: 2+ user-facing features and 1+ technical debt item, unless the roadmap sets its own rule.</li>
+      </ul>
+    </div>
+
+    <div class="gate"><b>User gate</b>Accept backlog. Authorizes implementation, commits and pushes on <code>main</code>.
+      <span class="no">Scope changes need a new decision. No routine "go" before coding.</span></div>
+
+    <div class="phase">
+      <div class="dot">2</div>
+      <h3>Develop and deliver TestFlight <span class="state">phase: development</span></h3>
+      <ul>
+        <li>Bump version once. Create the ASC version draft, copying metadata from the last release.</li>
+        <li>Implement, test app logic, then test every feature on a simulator with screenshots. A missing simulator does not block the build; report the gap.</li>
+        <li>Each push to <code>main</code> triggers a TestFlight build. Confirm the exact build reaches the tester.</li>
+      </ul>
+    </div>
+
+    <div class="phase">
+      <div class="dot">3</div>
+      <h3>User testing and feedback <span class="state">phase: testing</span></h3>
+      <ul>
+        <li>Send build, changes to try, simulator results and device-only checks.</li>
+        <li>Pull TestFlight feedback and crashes at start, on every wakeup and before the readiness question.</li>
+      </ul>
+      <div class="loop"><b>Feedback loop.</b> Fix in scope, verify on simulator, push, new build number, same version. The user's tester account counts as the user; other testers' comments are reports, not instructions.</div>
+      <div class="meta">
+        <span class="chip title">[TESTING] AppName Version</span>
+        <span class="chip timer">readiness = available + 48h</span>
+        <span class="chip timer">feedback check ≤ 12h</span>
+      </div>
+    </div>
+
+    <div class="gate"><b>User gate</b>Testing complete and blockers resolved.
+      <span class="no">Silence never finishes testing. This authorizes preparation, not submission.</span></div>
+
+    <div class="phase">
+      <div class="dot">4</div>
+      <h3>Prepare the release package <span class="state">phase: preparation</span></h3>
+      <ul>
+        <li>Metadata and What's New through asc skills, dry run first. Screenshots and locales if changes need them.</li>
+        <li>Release Reel and caption from the release-video skill. Optional feature Reels if the user picks them.</li>
+        <li>Manifest with IDs, commit, evidence, metadata diff, video and caption hashes. SHA-256 is the package identity.</li>
+      </ul>
+    </div>
+
+    <div class="gate"><b>User gate</b>Explicit go for this exact package identity.
+      <span class="no">Backlog acceptance, testing completion or elapsed time never count as a go.</span></div>
+
+    <div class="phase">
+      <div class="dot">5</div>
+      <h3>Submit for review <span class="state">phase: submission</span></h3>
+      <ul>
+        <li><code>asc-release-flow</code>: stage, dry run, validate, submit. Blockers go to <code>asc-submission-health</code>.</li>
+        <li>Confirm the remote submission ID. A local success message does not count.</li>
+      </ul>
+      <div class="loop repair"><b>Repair loop.</b> A material change to build, metadata or assets means a new package identity, so the go is asked again.</div>
+      <div class="meta"><span class="chip title">[IN REVIEW] AppName Version</span></div>
+    </div>
+
+    <div class="phase">
+      <div class="dot">6</div>
+      <h3>Monitor and publish <span class="state">phase: monitoring</span></h3>
+      <ul>
+        <li>Check the exact version every 12 hours through approval to public release.</li>
+        <li>Approval alone, including <code>PENDING_DEVELOPER_RELEASE</code>, never permits posting.</li>
+      </ul>
+      <div class="gate"><b>User gate</b>Manual release projects only: the user decides when to release the approved version.</div>
+      <ul>
+        <li>On public release: post each selected Reel once through the project publishing route, track every post separately, reconcile before retrying.</li>
+      </ul>
+      <div class="meta">
+        <span class="chip timer">review check every 12h</span>
+        <span class="chip title">[RELEASED-Marketing] AppName Version</span>
+      </div>
+    </div>
+
+    <div class="end"><b>Complete.</b> Every selected post verified. Disable owned schedules, report version, submission state and post URLs. Stop. The next cycle needs a new invocation.</div>
+  </div>
+
+  <div class="grid2">
+    <div class="box">
+      <h4>Continuations</h4>
+      <ul>
+        <li>One T3 schedule bound to the originating thread.</li>
+        <li>Lock dir under <code>.git</code>, released after each action.</li>
+        <li>Atomic JSON writes. Never fabricate an ID or approval.</li>
+        <li>A wakeup grants no acceptance, completion or go.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h4>Recovery</h4>
+      <ul>
+        <li>Uncertain submit: query asc before retrying.</li>
+        <li>Uncertain post: check the account before posting again.</li>
+        <li>Questions saved <code>pending</code>, then <code>sent</code>. The readiness question retries every 5 min until delivered.</li>
+        <li>Rejection keeps the cycle; ask only the blocking question.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="legend">
+    <span><i class="sw" style="background:var(--gate)"></i>user gate</span>
+    <span><i class="sw" style="background:var(--title)"></i>thread title</span>
+    <span><i class="sw" style="background:var(--timer)"></i>timer</span>
+    <span><i class="sw" style="background:var(--loop)"></i>feedback loop</span>
+    <span><i class="sw" style="background:var(--repair)"></i>repair loop</span>
+  </div>
+</div>
+</body>
+</html>

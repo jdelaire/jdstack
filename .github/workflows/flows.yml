@@ -1,0 +1,21 @@
+name: flows
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: Check every new commit
+        env:
+          BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          if git cat-file -e "$BASE^{commit}" 2>/dev/null; then range="$BASE..HEAD"; else range=HEAD; fi
+          for rev in $(git rev-list "$range"); do
+            scripts/check-flows.sh "$rev"
+          done
