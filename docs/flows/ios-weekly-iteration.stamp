@@ -1,8 +1,8 @@
-docs/flows/ios-weekly-iteration-dark.png 3959ef594652766ec715b5de371b0bd8e59fa4a1
-docs/flows/ios-weekly-iteration-light.png ddc5b2777e082ea244e57bb06123fc49fd97a143
-docs/flows/ios-weekly-iteration.html c5bb0ee06535930ea7bdc66cfe8b78aa1aaf5ed4
+docs/flows/ios-weekly-iteration-dark.png d202d4e72b7ccf10df5cb6e37b8af8d27a5bd975
+docs/flows/ios-weekly-iteration-light.png 2ab73b55812e68d5e303ff378b939385f6cd0cf4
+docs/flows/ios-weekly-iteration.html 8652e3603ff37582422d97c1898d1f9235c8362f
 scripts/lib/flow-stamp.sh c2bcd3e12dfb2ece09fe0303973f23cff3aea8aa
 scripts/render-flows.sh 513f8b706f9f1783098522d718a64a978fa382a9
-skills/ios-weekly-iteration/SKILL.md 370363f54ebdc8c0203a57001c6d8a25d68f701a
+skills/ios-weekly-iteration/SKILL.md 78384343f1663328a3e072905a2a65373f94e764
 skills/ios-weekly-iteration/agents/openai.yaml db29a0580ba0e83b053336f2d1fea359bb24b370
 skills/ios-weekly-iteration/references/continuations.md a5bb84f1b0458f8aa9328ddc23e01e8773b049f4
