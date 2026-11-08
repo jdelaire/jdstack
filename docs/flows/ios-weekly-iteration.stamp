@@ -1,8 +1,8 @@
-docs/flows/ios-weekly-iteration-dark.png d202d4e72b7ccf10df5cb6e37b8af8d27a5bd975
-docs/flows/ios-weekly-iteration-light.png 2ab73b55812e68d5e303ff378b939385f6cd0cf4
-docs/flows/ios-weekly-iteration.html 8652e3603ff37582422d97c1898d1f9235c8362f
+docs/flows/ios-weekly-iteration-dark.png e784a86d43a97edd9ec0b1b24cf6a1ccff851e13
+docs/flows/ios-weekly-iteration-light.png 9c360837f43d3d3fda844237766dc299c43abbec
+docs/flows/ios-weekly-iteration.html 7e52282db42edca856a7dc360ae0507ae529e0c5
 scripts/lib/flow-stamp.sh c2bcd3e12dfb2ece09fe0303973f23cff3aea8aa
 scripts/render-flows.sh 513f8b706f9f1783098522d718a64a978fa382a9
-skills/ios-weekly-iteration/SKILL.md 78384343f1663328a3e072905a2a65373f94e764
+skills/ios-weekly-iteration/SKILL.md d1b7d042621367735fe280f385d7f1b2a58086b6
 skills/ios-weekly-iteration/agents/openai.yaml db29a0580ba0e83b053336f2d1fea359bb24b370
-skills/ios-weekly-iteration/references/continuations.md a5bb84f1b0458f8aa9328ddc23e01e8773b049f4
+skills/ios-weekly-iteration/references/continuations.md c94a8e83a4974b62e568d4999a96d94b61202ba2

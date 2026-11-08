@@ -72,6 +72,7 @@
       <span class="chip">inspect repo, branch, asc, skills</span>
       <span class="chip">work on main</span>
       <span class="chip">checkpoint .git/ios-weekly-iteration/active.json</span>
+      <span class="chip">temp files in .git/ios-weekly-iteration/work/&lt;cycle&gt;</span>
       <span class="chip title">rename thread: AppName Version</span>
     </div>
   </div>
@@ -96,6 +97,7 @@
       <ul>
         <li>Bump version once. Create the ASC version draft, copying metadata from the last release.</li>
         <li>Implement, test app logic, then test every feature on a simulator with screenshots. A missing simulator does not block the build; report the gap.</li>
+        <li>Builds reuse one DerivedData and SwiftPM path in the work root. No builds in <code>/tmp</code> or agent scratchpads.</li>
         <li>Each push to <code>main</code> triggers a TestFlight build. Confirm the exact build reaches the tester.</li>
       </ul>
     </div>
@@ -116,7 +118,7 @@
     </div>
 
     <div class="gate"><b>User gate</b>Testing complete and blockers resolved.
-      <span class="no">Silence never finishes testing. This authorizes preparation, not submission.</span></div>
+      <span class="no">Silence never finishes testing. This authorizes preparation, not submission. Superseded builds are deleted.</span></div>
 
     <div class="phase">
       <div class="dot">4</div>
@@ -124,7 +126,7 @@
       <ul>
         <li>Metadata and What's New through asc skills, dry run first. Screenshots and locales if changes need them.</li>
         <li>Release Reel and caption from the release-video skill. Optional feature Reels if the user picks them.</li>
-        <li>Manifest with IDs, commit, evidence, metadata diff, video and caption hashes. SHA-256 is the package identity.</li>
+        <li>Copy cited evidence out of the work root, then write the manifest with IDs, commit, evidence, metadata diff, video and caption hashes. SHA-256 is the package identity.</li>
       </ul>
     </div>
 
@@ -159,7 +161,7 @@
       </div>
     </div>
 
-    <div class="end"><b>Complete.</b> Every selected post verified. Disable owned schedules, report version, submission state and post URLs. Stop. The next cycle needs a new invocation.</div>
+    <div class="end"><b>Complete.</b> Every selected post verified. Disable owned schedules, delete the work root and registered temp paths after checking nothing still uses them, report version, submission state, post URLs and space freed. Stop. The next cycle needs a new invocation.</div>
   </div>
 
   <div class="grid2">

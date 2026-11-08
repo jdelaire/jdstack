@@ -25,6 +25,7 @@ Keep a JSON checkpoint with these fields. Null means not yet resolved; fill fiel
 | `submission_approval` | Exact package identity, user response reference, and time |
 | `review` | Thread rename status, last observed state, observed-at UTC, approval evidence, and exact-version public-release evidence |
 | `publishing` | Thread rename status, intended account and route, authentication status, public-release trigger, user choice for optional feature posts, and a post list. Each entry has a stable key, release/feature kind, selected/skipped state, video/caption paths and hashes, status, attempt identity, provider job/container IDs, and verified post ID/URL |
+| `working_files` | Absolute work root, outside paths registered before use with their writer and `temp` or `keep` kind, superseded-build pruning status, terminal cleanup status, deleted paths with bytes freed, and skipped paths with reason |
 | `schedules` | Owned task IDs, purpose, creation request ID, bound thread, and returned next-run time |
 | `updated_at` | Last saved UTC timestamp |
 
@@ -63,6 +64,7 @@ Choose the next action from the saved phase:
 | Exact approved version publicly released | Verify release evidence and target-account authentication, then complete the Instagram step |
 | Some selected posts verified, others unfinished | Preserve verified post receipts; publish or reconcile only unfinished selected posts |
 | Every remaining selected post verified, with named user-directed removals recorded | Disable schedules and complete cycle |
+| Cycle complete or cancelled, working-file cleanup unfinished | Retry cleanup only; take no release or publishing action |
 
 Save an impending question before asking with status `pending`; after the tool or message succeeds, save status `sent` and its evidence. Keep the readiness recovery wakeup enabled until delivery is established from a successful send result or originating-thread evidence. Following interruption, reconcile that thread before sending: an existing delivered question is recorded without sending another; an undelivered pending question is sent under the retained recovery wakeup. Disable the wakeup only after establishing delivery. User replies resume the same phase and consume only the gate they actually answer.
 
@@ -97,3 +99,16 @@ Before submission, save intended app/version/build/package identity. After an un
 Before Instagram publishing, verify public App Store availability of this cycle's exact approved version and save the release evidence. An approval without public release retains all selected posts without publishing. Confirm target-account authentication at publication time; missing sign-in earlier does not block generation or App Store submission. For each selected post, save the target account, media and caption identity, attempt ID, and any provider container/job ID. Prefer provider idempotency support where available. On timeout, inspect that operation and the account's posts using the project's supported route. Save a verified matching post rather than publishing again. Preserve successful entries while reconciling unfinished ones; never restart the entire post set. If absence or success cannot be established reliably, request the user's help resolving the outcome.
 
 On rejections, missing access, or changed product requirements, keep the cycle identity and completed work. Continue independent authorized preparation or diagnosis. Ask only the question blocking dependent work, and require a renewed go if a repaired release materially changes its package.
+
+## Working-file cleanup
+
+Cleanup may delete only three kinds of path: the cycle's work root, outside paths registered as `temp` in `working_files`, and archives or IPAs this cycle created for candidates that never reached TestFlight or the App Store. Keep archives of every distributed build for its dSYMs.
+
+Check each path before deleting it:
+
+1. Resolve it with `realpath`. Skip it if it is not under the work root or a registered outside path, or if a symlink inside it points elsewhere.
+2. Skip it if Git tracks any file under it, or if the checkpoint, package manifest, publishing receipts or a pending follow-up references anything under it.
+3. Skip it while anything may still use it: a process with an open file, working directory or argument inside it; an active or queued SimLease job or session that names it in `simlease status`; a running owned agent or delegated task; an open Xcode workspace whose DerivedData it is.
+4. Delete it, then record the path and bytes freed. Record each skipped path with its reason and keep it.
+
+Save cleanup progress in the checkpoint, never inside the work root. Cleanup runs after schedules are disabled and every selected post is verified or removed, so no queued wakeup can need the files. Do not uninstall the app or erase simulator data; the simulator belongs to SimLease and the next cycle. A terminal checkpoint allows retrying cleanup without resuming release or publication actions.

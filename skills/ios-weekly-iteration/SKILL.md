@@ -25,6 +25,18 @@ Explain the accepted progression once: backlog, development, testing, preparatio
 
 When a cycle starts, rename the originating thread to `<AppName> <Version>`, for example `Wat Kham 1.15.0`. Use the host's thread-rename tool (in T3 Code, `t3_thread_update` with `action: "rename"`). `<AppName>` is the app's home-screen name (`CFBundleDisplayName`, not the longer App Store name), and `<Version>` is the release version this cycle targets. Take it from the roadmap milestone this cycle targets, or from the project when no roadmap applies; otherwise rename once the accepted backlog fixes it. If the target version changes later, rename again and keep any status prefix. Later status prefixes go in front of this title. A host without thread renaming does not block the cycle.
 
+## Working files
+
+Keep every temporary file the cycle creates under one work root: the absolute path that `git rev-parse --git-path ios-weekly-iteration/work/<cycle_id>` returns. Create `derived/`, `spm/`, `builds/`, `captures/` and `logs/` inside it. The state directory above it holds only checkpoints and receipts.
+
+Point every Xcode build at `work/<cycle_id>/derived` with `-derivedDataPath`, and every SwiftPM build at `work/<cycle_id>/spm` with `--scratch-path`. Reuse these paths for the whole cycle and run builds that share them one at a time. A before/after performance comparison may add one `derived-before/`. Never create build folders in `/tmp`, an agent scratchpad, the repository, or a new folder per check.
+
+Give delegated tasks the work root and tell them to write builds, captures and logs there, not in their own scratchpad. When a sub-skill or tool picks its own output location, such as release-video renders and Remotion's `TMPDIR`, asc build and export folders, or screenshot raw, framed and review folders, set it to a work-root path when the tool accepts one. Otherwise record that path in the checkpoint's `working_files` before the tool writes there, and use the sub-skill's own ownership manifest when it has one.
+
+Evidence the package or the user relies on does not stay in the work root. That includes test results, performance comparisons, simulator and feedback screenshots, QA reports and receipts. Copy it into the project's release evidence location before saving the package identity, and reference it from there.
+
+Clean up twice, following [working-file cleanup](references/continuations.md#working-file-cleanup). When the user confirms testing is complete, delete superseded candidate builds in the work root. When the cycle reaches `complete` or `cancelled`, delete the work root and the registered temporary paths. Never delete archives of builds that reached TestFlight or the App Store, tracked files, receipts, or files another owner created. Leave simulators and their app data alone.
+
 ## 1. Accept the backlog
 
 Inspect the actual app and recent code, accessible user feedback including TestFlight feedback and crash submissions, crashes, and performance evidence. Establish a baseline build and relevant checks. Use source code as truth when comments disagree.
@@ -71,7 +83,7 @@ Implement the user's feedback during this window. Verify each fix on a simulator
 
 At 48 hours, collect TestFlight feedback once more, then ask whether testing is complete and list unresolved feedback or retesting. Keep this phase until the user confirms readiness and blocking feedback is resolved. Silence does not finish testing. The user may explicitly finish sooner or extend testing. A new build does not silently reset the window; agree on more testing when needed.
 
-Once the user confirms testing is complete, proceed directly to release preparation. Testing readiness authorizes preparation, not submission.
+Once the user confirms testing is complete, delete superseded candidate builds from the work root and proceed directly to release preparation. Testing readiness authorizes preparation, not submission.
 
 ## 4. Prepare the release package
 
@@ -81,7 +93,7 @@ Discover and use the release-video skill already available for this project. Fol
 
 If the project's video workflow supports feature cutdowns, offer standalone feature Reels as an optional addition to the release Reel. Honor an existing user choice; otherwise include the choice when presenting the package. Prepared clips alone do not select or authorize extra posts. Generate and verify a separate video and caption for each selected feature before the submission go. Unselected feature posts do not block the cycle.
 
-Create a concrete package containing app/version/build IDs, source commit, change summary, test and performance evidence, metadata changes, the selected Instagram post set with each video's and caption's identity, and configured release behavior. Save its identity as described in the reference. Commit release artifacts according to project conventions and push them right away.
+Copy the evidence the package cites out of the work root first, as described in [Working files](#working-files). Then create a concrete package containing app/version/build IDs, source commit, change summary, test and performance evidence, metadata changes, the selected Instagram post set with each video's and caption's identity, and configured release behavior. Save its identity as described in the reference. Commit release artifacts according to project conventions and push them right away.
 
 ## 5. Get the submission go
 
@@ -103,4 +115,4 @@ Once the exact version is publicly available, save release evidence and start th
 
 Track intent, asset identity, any provider container/job ID, status, and verified post ID or URL separately for each selected post. After a timeout or interruption, reconcile that post's provider result before retrying, and continue only with posts still unfinished. If success cannot be determined, ask rather than risk a duplicate.
 
-Record any optional posts the user explicitly removes from scope by their post keys. Complete the cycle only after every remaining selected post is verified. A verified release Reel alone does not finish a cycle that includes feature posts. Disable owned continuations, mark the cycle complete, and report the version, submission state, videos, all post URLs, and any actual limitation. Stop there. Another release cycle requires another explicit user invocation.
+Record any optional posts the user explicitly removes from scope by their post keys. Complete the cycle only after every remaining selected post is verified. A verified release Reel alone does not finish a cycle that includes feature posts. Disable owned continuations, mark the cycle complete, run working-file cleanup, and report the version, submission state, videos, all post URLs, space freed, paths kept with their reason, and any actual limitation. Stop there. Another release cycle requires another explicit user invocation.
