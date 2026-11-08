@@ -4,7 +4,7 @@ Use this contract for a user-started cycle. A skill supplies instructions; persi
 
 ## Project state
 
-Resolve the repository root and the absolute path returned by `git rev-parse --git-path ios-weekly-iteration/active.json`. Resolve `ios-weekly-iteration/lock` through the same Git command. This keeps checkpoints and locks outside tracked app source. Keep deliverables in the project's established release paths.
+Resolve the repository root and the absolute path returned by `git rev-parse --path-format=absolute --git-path ios-weekly-iteration/active.json`. Resolve `ios-weekly-iteration/lock` through the same Git command. This keeps checkpoints and locks outside tracked app source. Keep deliverables in the project's established release paths.
 
 On explicit user start, inspect any existing state. Resume a matching active cycle rather than overwrite it. If a different active cycle exists, ask which to finish or cancel. Archive terminal state by cycle ID before creating a replacement under a fresh explicit invocation.
 
@@ -41,7 +41,7 @@ An old timestamp alone does not prove ownership ended. Inspect the host's run/th
 
 ## Resume decision
 
-Read the checkpoint and originating user context before doing work. Verify the requested cycle, project, thread, explicit-start evidence, branch, candidate source/build, and outstanding user gate. Missing, mismatched, cancelled, or completed state is an exit, never a new start. Disable a stale continuation only after verifying its ownership.
+Read the checkpoint and originating user context before doing work. Verify the requested cycle, project, thread, explicit-start evidence, branch, candidate source/build, and outstanding user gate. Missing, mismatched, cancelled, or completed state is an exit, never a new start. A matching cancelled or completed cycle may only retry its recorded owned-schedule and working-file cleanup. Disable a stale continuation only after verifying its ownership.
 
 If the agent's own main commits after the candidate only contain known release artifacts, record that relationship. If other source changed since the candidate, inspect it before using the candidate or its approvals. Do not assume latest build means intended build.
 
@@ -81,7 +81,7 @@ For review and automatic-release availability checks, use `{"type":"interval","e
 Give the task a title containing cycle ID and purpose, and use this continuation prompt with resolved values:
 
 ```text
-Continue $ios-weekly-iteration cycle <cycle_id>, previously started explicitly by the user, in project <absolute_project_root> and originating thread <thread_id>. Read checkpoint <absolute_state_path> and references/continuations.md. Resume only that matching active cycle; missing or terminal state must not start a cycle. Reconcile phase, user responses, candidate identity, outstanding external actions, and owned schedules before taking the next authorized action. This wakeup grants no backlog acceptance, testing completion, or submission approval.
+Continue $ios-weekly-iteration cycle <cycle_id>, previously started explicitly by the user, in project <absolute_project_root> and originating thread <thread_id>. Read checkpoint <absolute_state_path> and references/continuations.md. Resume only that matching active cycle; missing or terminal state must not start a cycle, and a matching terminal cycle may only retry its recorded schedule and working-file cleanup. Reconcile phase, user responses, candidate identity, outstanding external actions, and owned schedules before taking the next authorized action. This wakeup grants no backlog acceptance, testing completion, or submission approval.
 ```
 
 Save and inspect returned `scheduledTaskId`, `boundThreadId`, `enabled`, and `nextRunAt`. Confirm the binding and next run, then report the next check to the user. Schedule registration is part of the user-started workflow, not automatic activation of an unstarted skill.
@@ -107,8 +107,8 @@ Cleanup may delete only three kinds of path: the cycle's work root, outside path
 Check each path before deleting it:
 
 1. Resolve it with `realpath`. Skip it if it is not under the work root or a registered outside path, or if a symlink inside it points elsewhere.
-2. Skip it if Git tracks any file under it, or if the checkpoint, package manifest, publishing receipts or a pending follow-up references anything under it.
+2. Skip it if Git tracks any file under it, or if the package manifest, evidence, publishing receipts, publishing follow-up state or any checkpoint field other than `working_files` references anything under it.
 3. Skip it while anything may still use it: a process with an open file, working directory or argument inside it; an active or queued SimLease job or session that names it in `simlease status`; a running owned agent or delegated task; an open Xcode workspace whose DerivedData it is.
 4. Delete it, then record the path and bytes freed. Record each skipped path with its reason and keep it.
 
-Save cleanup progress in the checkpoint, never inside the work root. Cleanup runs after schedules are disabled and every selected post is verified or removed, so no queued wakeup can need the files. Do not uninstall the app or erase simulator data; the simulator belongs to SimLease and the next cycle. A terminal checkpoint allows retrying cleanup without resuming release or publication actions.
+Save cleanup progress in the checkpoint, never inside the work root. Run these checks in both passes. Prune superseded candidate builds once the user confirms testing is complete. Run terminal cleanup only after owned schedules are disabled and the cycle is either complete, with every selected post verified or removed, or explicitly cancelled. Do not uninstall the app or erase simulator data; the simulator belongs to SimLease and the next cycle. A terminal checkpoint allows retrying cleanup without resuming release or publication actions.

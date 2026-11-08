@@ -3,6 +3,6 @@ docs/flows/ios-weekly-iteration-light.png 9c360837f43d3d3fda844237766dc299c43abb
 docs/flows/ios-weekly-iteration.html 7e52282db42edca856a7dc360ae0507ae529e0c5
 scripts/lib/flow-stamp.sh c2bcd3e12dfb2ece09fe0303973f23cff3aea8aa
 scripts/render-flows.sh 513f8b706f9f1783098522d718a64a978fa382a9
-skills/ios-weekly-iteration/SKILL.md d1b7d042621367735fe280f385d7f1b2a58086b6
+skills/ios-weekly-iteration/SKILL.md d914a3b41175fcd14d27338a9972da4c75ece699
 skills/ios-weekly-iteration/agents/openai.yaml db29a0580ba0e83b053336f2d1fea359bb24b370
-skills/ios-weekly-iteration/references/continuations.md c94a8e83a4974b62e568d4999a96d94b61202ba2
+skills/ios-weekly-iteration/references/continuations.md f9983db8f8d46a71e95f46a14c9fd673e4fe4fd2

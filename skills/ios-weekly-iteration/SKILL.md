@@ -13,7 +13,7 @@ Canonical source: [jdelaire/jdstack](https://github.com/jdelaire/jdstack), under
 
 Read [continuations](references/continuations.md) before creating or resuming state. It defines durable checkpoints, exclusive ownership, scheduling, and recovery.
 
-An explicit invocation by the user starts one cycle. Installation, matching project work, a timer, or this file appearing in context cannot start one. An automatic continuation can only resume a matching active cycle with recorded user-start evidence. Completed, cancelled, missing, or mismatched cycles exit without starting another.
+An explicit invocation by the user starts one cycle. Installation, matching project work, a timer, or this file appearing in context cannot start one. An automatic continuation can only resume a matching active cycle with recorded user-start evidence. Completed, cancelled, missing, or mismatched cycles exit without starting another. A matching completed or cancelled cycle may only retry its recorded schedule and working-file cleanup.
 
 A later explicit request to publish additional prepared clips is a separate publishing follow-up. Save its user authorization, asset identities and progress separately; preserve the completed cycle and its submitted package. It does not start another release cycle or require resubmitting the app.
 
@@ -27,9 +27,9 @@ When a cycle starts, rename the originating thread to `<AppName> <Version>`, for
 
 ## Working files
 
-Keep every temporary file the cycle creates under one work root: the absolute path that `git rev-parse --git-path ios-weekly-iteration/work/<cycle_id>` returns. Create `derived/`, `spm/`, `builds/`, `captures/` and `logs/` inside it. The state directory above it holds only checkpoints and receipts.
+Keep every temporary file the cycle creates under one work root, `<work_root>`: the absolute path that `git rev-parse --path-format=absolute --git-path ios-weekly-iteration/work/<cycle_id>` returns. Create `derived/`, `spm/`, `builds/`, `captures/` and `logs/` inside it. The state directory above it holds only checkpoints and receipts.
 
-Point every Xcode build at `work/<cycle_id>/derived` with `-derivedDataPath`, and every SwiftPM build at `work/<cycle_id>/spm` with `--scratch-path`. Reuse these paths for the whole cycle and run builds that share them one at a time. A before/after performance comparison may add one `derived-before/`. Never create build folders in `/tmp`, an agent scratchpad, the repository, or a new folder per check.
+Point every Xcode build at `<work_root>/derived` with `-derivedDataPath`, and every SwiftPM build at `<work_root>/spm` with `--scratch-path`. Reuse these paths for the whole cycle and run builds that share them one at a time. A before/after performance comparison may add one `<work_root>/derived-before`. Never create build folders in `/tmp`, an agent scratchpad, the repository, or a new folder per check.
 
 Give delegated tasks the work root and tell them to write builds, captures and logs there, not in their own scratchpad. When a sub-skill or tool picks its own output location, such as release-video renders and Remotion's `TMPDIR`, asc build and export folders, or screenshot raw, framed and review folders, set it to a work-root path when the tool accepts one. Otherwise record that path in the checkpoint's `working_files` before the tool writes there, and use the sub-skill's own ownership manifest when it has one.
 
