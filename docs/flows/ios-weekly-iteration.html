@@ -97,7 +97,7 @@
       <ul>
         <li>Bump version once. Create the ASC version draft, copying metadata from the last release.</li>
         <li>Implement, test app logic, then test every feature on a simulator with screenshots. A missing simulator does not block the build; report the gap.</li>
-        <li>Builds reuse one DerivedData and SwiftPM path in the work root. No builds in <code>/tmp</code> or agent scratchpads.</li>
+        <li>Builds reuse one DerivedData and SwiftPM path in the work root. No builds in <code>/tmp</code> or agent scratchpads. Profiling traces go there too; raw <code>.ktrace</code> leftovers are deleted after each run.</li>
         <li>Each push to <code>main</code> triggers a TestFlight build. Confirm the exact build reaches the tester.</li>
       </ul>
     </div>

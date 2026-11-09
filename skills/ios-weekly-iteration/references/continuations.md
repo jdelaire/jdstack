@@ -49,6 +49,7 @@ Choose the next action from the saved phase:
 
 | Situation | Next action |
 | --- | --- |
+| Matching active cycle whose checkpoint lacks `working_files` | Create the work root, record it, then continue the saved phase with all new builds there |
 | Accepted backlog, no App Store version draft | Create the draft, then develop |
 | Accepted backlog, development unfinished | Develop immediately |
 | CI or TestFlight not ready | Reconcile exact pipeline/build; register an external check if needed |
@@ -110,5 +111,7 @@ Check each path before deleting it:
 2. Skip it if Git tracks any file under it, or if the package manifest, evidence, publishing receipts, publishing follow-up state or any checkpoint field other than `working_files` references anything under it.
 3. Skip it while anything may still use it: a process with an open file, working directory or argument inside it; an active or queued SimLease job or session that names it in `simlease status`; a running owned agent or delegated task; an open Xcode workspace whose DerivedData it is.
 4. Delete it, then record the path and bytes freed. Record each skipped path with its reason and keep it.
+
+An active cycle whose checkpoint predates `working_files` gets its work root on resume; a terminal one does not. Register an earlier build folder outside it as `temp` only when this cycle's own records show the cycle created it; leave other folders alone.
 
 Save cleanup progress in the checkpoint, never inside the work root. Run these checks in both passes. Prune superseded candidate builds once the user confirms testing is complete. Run terminal cleanup only after owned schedules are disabled and the cycle is either complete, with every selected post verified or removed, or explicitly cancelled. Do not uninstall the app or erase simulator data; the simulator belongs to SimLease and the next cycle. A terminal checkpoint allows retrying cleanup without resuming release or publication actions.
